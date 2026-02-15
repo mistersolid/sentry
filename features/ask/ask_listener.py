@@ -1,7 +1,6 @@
 """
-Sentry - January 11, 2025
-Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity to
-automatically remove threats to your community's safety.
+Goosenet
+Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS
@@ -58,7 +57,7 @@ class AskListener(commands.Cog):
 				# Lecture the person asking to ask
 				if probability > 0.95:
 					bot_message = await channel.send(
-						f'{message.author.mention}. *HONK!* Ask your question directly, there\'s no '
+						f'{message.author.mention}. **HONK!** Ask your question directly, there\'s no '
 						f'need to ask to ask! :)'
 					)
 					# Store the mapping

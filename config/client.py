@@ -1,7 +1,6 @@
 """
-Sentry - December 17, 2025
-Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity to
-automatically remove threats to your community's safety.
+Goosenet
+Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS
@@ -9,9 +8,9 @@ from discord.ext import commands
 from config.intents import intents
 
 # PROFILE
-name = 'Sentry'
-description = ('Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity '
-			   'to automatically remove threats to your community\'s safety.')
+name = 'Goosenet'
+description = ('Goosenet is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity '
+			   'to automatically remove threats to your community\'s safety. Skynet but for gooses.')
 
 # CLIENT
-sentry = commands.Bot(command_prefix='/', description=description, intents=intents)
+goosenet = commands.Bot(command_prefix='/', description=description, intents=intents)

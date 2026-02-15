@@ -1,8 +1,7 @@
 # Claude generated
 """
-Sentry - January 19, 2025
-Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity to
-automatically remove threats to your community's safety.
+Goosenet
+Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS
@@ -12,13 +11,10 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 class CustomFeatureExtractor(BaseEstimator, TransformerMixin):
-	"""Extract hand-crafted features to distinguish 'asking to ask' from 'asking where to ask'"""
-
 	def fit(self, X, y=None):
 		return self
 
 	def transform(self, X):
-		"""Extract features from text"""
 		# Convert to Series if needed
 		if isinstance(X, np.ndarray):
 			X = pd.Series(X.flatten())

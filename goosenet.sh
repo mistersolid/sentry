@@ -1,12 +1,11 @@
 #!/bin/bash
 
-# Sentry - January 21, 2025
-# Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity to
-# automatically remove threats to your community's safety.
+# Goosenet
+# goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 
 # HELP
 show_help() {
-    echo "Usage: ./sentry.sh [command]"
+    echo "Usage: ./goosenet.sh [command]"
     echo ""
     echo "Commands:"
     echo "  setup    Initialize virtual environment, install requirements, and start bot"
@@ -18,7 +17,7 @@ show_help() {
 
 # SETUP
 setup_bot() {
-    echo "--- Starting Sentry Setup ---"
+    echo "--- Starting Goosenet Setup ---"
     
     # Update system packages
     sudo apt-get update && sudo apt-get install -y python3-venv python3-pip nodejs npm
@@ -47,8 +46,8 @@ setup_bot() {
 
 # START
 start_bot() {
-    echo "Starting Sentry Bot with PM2..."
-    pm2 start main.py --name "sentry-bot" --interpreter ./venv/bin/python3
+    echo "Starting Goosenet Bot with PM2..."
+    pm2 start main.py --name "goosenet-bot" --interpreter ./venv/bin/python3
     pm2 save
 }
 
@@ -61,13 +60,13 @@ case "$1" in
         start_bot
         ;;
     stop)
-        pm2 stop sentry-bot
+        pm2 stop goosenet-bot
         ;;
     restart)
-        pm2 restart sentry-bot
+        pm2 restart goosenet-bot
         ;;
     logs)
-        pm2 logs sentry-bot
+        pm2 logs goosenet-bot
         ;;
     *)
         show_help

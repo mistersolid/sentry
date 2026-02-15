@@ -1,7 +1,6 @@
 """
-Sentry - January 11, 2025
-Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity to
-automatically remove threats to your community's safety.
+Goosenet
+Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS

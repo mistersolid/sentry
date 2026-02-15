@@ -1,57 +1,42 @@
 """
-Sentry - December 17, 2025
-Sentry is an anti-spam and anti-scam bot that detects coordinated, script-enabled malicious activity to
-automatically remove threats to your community's safety.
+Goosenet
+Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS
 from config import client
-from features.ask.ask_command import AskFeature
-from features.mute.general import GeneralCommands
-from features.mute.mute_command import MuteFeature
+from features.mute.mute_logic import MuteFeature
 from features.mute.mute_database import MuteStorage
-from features.mute.mute_listener import MuteListener
+from features.ask.ask_command import AskFeature
 from features.ask.ask_listener import AskListener
 
 # LOAD COGS
-@client.sentry.event
+@client.goosenet.event
 async def on_ready():
-    assert client.sentry.user is not None
+    assert client.goosenet.user is not None
 
-    print(f'Logged in as {client.sentry.user} (ID: {client.sentry.user.id})')
+    print(f'Logged in as {client.goosenet.user} (ID: {client.goosenet.user.id})')
 
-    if not client.sentry.get_cog("GeneralCommands"):
-        print("Adding GeneralCommands cog...")
-        await client.sentry.add_cog(GeneralCommands(client.sentry))
-        print("GeneralCommands cog added.")
-
-    if not client.sentry.get_cog("MuteStorage"):
+    if not client.goosenet.get_cog("MuteStorage"):
         print("Adding MuteDatabase cog...")
-        await client.sentry.add_cog(MuteStorage(client.sentry))
+        await client.goosenet.add_cog(MuteStorage(client.goosenet))
         print("MuteDatabase cog added.")
     else:
         print("MuteDatabase cog already loaded.")
 
-    if not client.sentry.get_cog("MuteFeature"):
+    if not client.goosenet.get_cog("MuteFeature"):
         print("Adding MuteFeature cog...")
-        await client.sentry.add_cog(MuteFeature(client.sentry))
+        await client.goosenet.add_cog(MuteFeature(client.goosenet))
         print("MuteFeature cog added.")
     else:
         print("MuteFeature cog already loaded.")
 
-    if not client.sentry.get_cog("MuteListener"):
-        print("Adding MuteListener cog...")
-        await client.sentry.add_cog(MuteListener(client.sentry))
-        print("MuteListener cog added.")
-    else:
-        print("MuteListener cog already loaded.")
-
-    if not client.sentry.get_cog("AskFeature"):
+    if not client.goosenet.get_cog("AskFeature"):
         print("Adding AskFeature cog...")
-        await client.sentry.add_cog(AskFeature(client.sentry))
+        await client.goosenet.add_cog(AskFeature(client.goosenet))
         print("AskFeature cog added.")
 
-    if not client.sentry.get_cog("AskListener"):
+    if not client.goosenet.get_cog("AskListener"):
         print("Adding AskListener cog...")
-        await client.sentry.add_cog(AskListener(client.sentry))
+        await client.goosenet.add_cog(AskListener(client.goosenet))
         print("AskListener cog added.")
