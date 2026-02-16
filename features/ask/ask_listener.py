@@ -8,12 +8,10 @@ import sys
 import joblib
 from discord.ext import commands
 from features.ask.ask_command import AskFeature
-from features.ask.transformers import CustomFeatureExtractor
+from features.ask.transformers import EdgeCaseFeatureExtractor
 
-# Fix for pickle/joblib looking for CustomFeatureExtractor in __main__
-# This maps the expected location to the actual imported class
 import __main__
-__main__.CustomFeatureExtractor = CustomFeatureExtractor
+__main__.EdgeCaseFeatureExtractor = EdgeCaseFeatureExtractor
 
 # SUPERVISORS
 SUPERVISORS = {

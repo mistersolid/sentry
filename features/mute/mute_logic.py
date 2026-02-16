@@ -18,7 +18,6 @@ import warnings
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 warnings.filterwarnings('ignore', message='Truncated File Read', module='PIL')
 from features.mute.mute_database import MuteDatabase
-from features.mute.entities import science_flock
 
 
 # FUNCTIONS
@@ -40,20 +39,10 @@ class MuteFeature(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._db_manager = MuteDatabase()
-        self._last_goose: dict[int, str] = {}  # guild_id -> last goose name
 
     @property
     def db(self):
         return self._db_manager.db
-
-    def pick_goose(self, guild_id: int):
-        last = self._last_goose.get(guild_id)
-        candidates = [g for g in science_flock if g.name != last]
-        goose = random.choice(candidates)
-        goose.mute_count += 1
-        goose.honk_count += 1
-        self._last_goose[guild_id] = goose.name
-        return goose
 
     async def get_monitored_roles(self, guild_id):
         async with self.db.execute('SELECT role_id FROM monitored_roles WHERE guild_id = ?', (guild_id,)) as cursor:
@@ -169,10 +158,8 @@ class MuteFeature(commands.Cog):
                             break
                     await message.delete()
 
-                    goose = self.pick_goose(message.guild.id)
-                    statement = goose.tool.mute_statement.format(user=message.author.mention)
                     await self.send_feedback(message,
-                        f'**{goose.name}** — *{goose.title}*\n{statement}')
+                        f'**HONK!**\n{message.author.mention} has been muted for uploading a banned image.')
                 except Forbidden:
                     await self.send_feedback(message,
                         f'**Action failed**\nUser: {message.author.mention}\n'
