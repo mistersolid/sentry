@@ -1,6 +1,6 @@
 """
-Goosenet
-Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
+Sentry
+Sentry is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS
@@ -34,7 +34,7 @@ def sync_image_url_to_phash(url: str) -> str:
 
 # COG
 class MuteFeature(commands.Cog):
-    HAMMING_THRESHOLD = 6  # 6 out of 64 bits = ~90% similarity
+    HAMMING_THRESHOLD = 10  # 6 out of 64 bits = ~85% similarity
 
     def __init__(self, bot):
         self.bot = bot

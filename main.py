@@ -1,6 +1,6 @@
 """
-Goosenet
-Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
+Sentry
+Sentry is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS
@@ -14,4 +14,4 @@ os.environ['NUMEXPR_NUM_THREADS'] = '1'
 
 # MAIN
 if __name__ == "__main__":
-	client.goosenet.run(os.getenv('DISCORD_TOKEN'))
+	client.sentry.run(os.getenv('DISCORD_TOKEN'))

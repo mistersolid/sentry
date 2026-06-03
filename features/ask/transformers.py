@@ -1,7 +1,7 @@
 # Claude generated
 """
-Goosenet
-Goosenet is an anti-spam and anti-scam bot. Skynet but for the goose servers.
+Sentry
+Sentry is an anti-spam and anti-scam bot. Skynet but for the goose servers.
 """
 
 # IMPORTS

@@ -1,11 +1,11 @@
-# Goosenet - Advanced Discord Moderation & AI Bot
+# Sentry - Advanced Discord Moderation & AI Bot
 
-Goosenet is a high-performance Discord bot designed to protect communities from coordinated malicious activity, scams, and spam. It combines traditional moderation tools with machine learning and perceptual hashing to provide a comprehensive security layer for your server.
+Sentry is a high-performance Discord bot designed to protect communities from coordinated malicious activity, scams, and spam. It combines traditional moderation tools with machine learning and perceptual hashing to provide a comprehensive security layer for your server.
 
 # Key Features
 
 ### Automated Image Enforcement (Mute Feature)
-Goosenet uses **Perceptual Hashing (pHash)** to detect and block prohibited images, even if they have been slightly modified.
+Sentry uses **Perceptual Hashing (pHash)** to detect and block prohibited images, even if they have been slightly modified.
 - **Instant Timeout**: Automatically mutes users posting blacklisted content.
 - **Proactive Cleanup**: Deletes offending images and recent message history from the offender.
 - **Role-Based Monitoring**: Targets specific high-risk roles for content inspection.
@@ -20,14 +20,14 @@ Leverages a **Machine Learning model** (XGBoost) to improve communication flow b
 ## Project Structure
 
 ```
-Goosenet/
+Sentry/
 ├── config/             # Bot configuration (Intents, Keys, Client)
 ├── features/
 │   ├── ask/            # AI-powered Q&A module
 │   └── mute/           # Image enforcement & moderation module
 ├── main.py             # Main entry point
 ├── requirements.txt    # Project dependencies
-└── goosenet.sh           # Deployment/startup script
+└── sentry.sh           # Deployment/startup script
 ```
 
 ## Installation & Setup
@@ -39,8 +39,8 @@ Goosenet/
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-repo/goosenet.git
-cd goosenet
+git clone https://github.com/your-repo/sentry.git
+cd sentry
 pip install -r requirements.txt
 ```
 
@@ -56,9 +56,9 @@ os.environ['DISCORD_SECRET'] = ''
 ### 3. Running the Bot
 You can use the provided management script for easy deployment:
 ```bash
-chmod +x goosenet.sh
-./goosenet.sh setup    # Initial setup and start
-./goosenet.sh logs     # View real-time logs
+chmod +x sentry.sh
+./sentry.sh setup    # Initial setup and start
+./sentry.sh logs     # View real-time logs
 ```
 
 ## Documentation
@@ -67,4 +67,4 @@ chmod +x goosenet.sh
 - [Ask Feature Documentation](features/ask/README.md)
 
 ## Community & Safety
-Goosenet is built with a focus on anti-spam and anti-scam. It is designed to be lightweight, efficient, and easy to deploy for server administrators who need automated protection against visual-based scams.
+Sentry is built with a focus on anti-spam and anti-scam. It is designed to be lightweight, efficient, and easy to deploy for server administrators who need automated protection against visual-based scams.
