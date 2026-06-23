@@ -9,12 +9,14 @@ from discord.ext import commands
 from discord import app_commands, Forbidden
 import datetime
 import random
+import re
 from PIL import Image, ImageFile
 import imagehash
 from io import BytesIO
 import urllib.request
 import warnings
 
+# HANDLE TRUNCATED IMAGES
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 warnings.filterwarnings('ignore', message='Truncated File Read', module='PIL')
 from features.mute.mute_database import MuteDatabase
@@ -64,7 +66,26 @@ class MuteFeature(commands.Cog):
             if target != message.channel:
                 await message.channel.send(f'Could not send to {target.mention}. {text}')
 
+    # MUTE AND CLEANUP
+    async def _mute_and_cleanup(self, message, reason, feedback_text):
+        try:
+            await message.author.timeout(discord.utils.utcnow() + datetime.timedelta(weeks=1),
+                                         reason=reason)
+            async for msg in message.channel.history(limit=10, before=message):
+                if msg.author.id == message.author.id:
+                    await msg.delete()
+                else:
+                    break
+            await message.delete()
+
+            await self.send_feedback(message, feedback_text)
+        except Forbidden:
+            await self.send_feedback(message,
+                                     f'**Action failed**\nUser: {message.author.mention}\n'
+                                     f'Reason: Bot lacks permission or role hierarchy is insufficient.')
+
     # COMMANDS
+    # MUTE IMAGE
     @app_commands.command(name='mute-image', description='Ban an image by URL so it triggers auto-mute')
     @app_commands.checks.has_permissions(ban_members=True)
     @app_commands.guild_only()
@@ -77,6 +98,7 @@ class MuteFeature(commands.Cog):
 
         await interaction.followup.send(f'Image registered.\npHash: `{phash}`', ephemeral=True)
 
+    # MONITORED ROLES
     @app_commands.command(name='monitored-roles', description='Manage roles that the bot listens to for image matching')
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
@@ -114,6 +136,7 @@ class MuteFeature(commands.Cog):
                 role_mentions = [f'<@&{r_id}>' for r_id in roles]
                 await interaction.followup.send(f'**Monitored Roles:**\n' + '\n'.join(role_mentions), ephemeral=True)
 
+    # FEEDBACK
     @app_commands.command(name='set-feedback-channel',
                           description='Set the channel where enforcement feedback messages are sent')
     @app_commands.checks.has_permissions(administrator=True)
@@ -127,7 +150,6 @@ class MuteFeature(commands.Cog):
         await self.db.commit()
         await interaction.followup.send(f'Feedback channel set to {channel.mention}.', ephemeral=True)
 
-    # LISTENER
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.bot or not message.guild or message.author.guild_permissions.administrator:
@@ -137,6 +159,35 @@ class MuteFeature(commands.Cog):
         if not monitored or not monitored & {r.id for r in message.author.roles}:
             return
 
+        # MUTE & DELETE DISCORD INVITE LINKS
+        # FOR USERS <100 MESSAGES
+        invite_pattern = re.compile(r'(discord\.(gg|io|me|li)|discordapp\.com/invite|discord\.com/invite)/[a-zA-Z0-9-]+', re.IGNORECASE)
+        if invite_pattern.search(message.content):
+            # Count how many messages the user has sent in the server
+            message_count = 0
+            for channel in message.guild.text_channels:
+                try:
+                    async for msg in channel.history(limit=200):
+                        if msg.author.id == message.author.id:
+                            message_count += 1
+                            if message_count >= 100:
+                                break
+                except (Forbidden, Exception):
+                    continue
+                if message_count >= 100:
+                    break
+
+            if message_count < 100:
+                # Delete messages from the last 2 minutes
+                two_minutes_ago = discord.utils.utcnow() - datetime.timedelta(minutes=2)
+                try:
+                    async for msg in message.channel.history(limit=100, after=two_minutes_ago):
+                        if msg.author.id == message.author.id:
+                            await msg.delete()
+                except (Forbidden, Exception):
+                    pass
+
+        # MUTE & DELETE BANNED IMAGES
         for att in message.attachments:
             if not (att.content_type and att.content_type.startswith('image/')):
                 continue
@@ -148,22 +199,11 @@ class MuteFeature(commands.Cog):
                 banned = await cursor.fetchall()
 
             if any(current - imagehash.hex_to_hash(row[0]) <= self.HAMMING_THRESHOLD for row in banned):
-                try:
-                    await message.author.timeout(discord.utils.utcnow() + datetime.timedelta(weeks=1),
-                                                 reason='Uploaded banned image (≥90% hash match)')
-                    async for msg in message.channel.history(limit=10, before=message):
-                        if msg.author.id == message.author.id:
-                            await msg.delete()
-                        else:
-                            break
-                    await message.delete()
-
-                    await self.send_feedback(message,
-                        f'**HONK!**\n{message.author.mention} has been muted for uploading a banned image.')
-                except Forbidden:
-                    await self.send_feedback(message,
-                        f'**Action failed**\nUser: {message.author.mention}\n'
-                        f'Reason: Bot lacks permission or role hierarchy is insufficient.')
+                await self._mute_and_cleanup(
+                    message,
+                    reason='Uploaded banned image (≥90% hash match)',
+                    feedback_text=f'**HONK!**\n{message.author.mention} has been muted for uploading a banned image.'
+                )
                 return
 
             await self.db.execute(

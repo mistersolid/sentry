@@ -17,6 +17,7 @@ async def on_ready():
 
     print(f'Logged in as {client.sentry.user} (ID: {client.sentry.user.id})')
 
+    # MUTE STORAGE
     if not client.sentry.get_cog("MuteStorage"):
         print("Adding MuteDatabase cog...")
         await client.sentry.add_cog(MuteStorage(client.sentry))
@@ -24,6 +25,7 @@ async def on_ready():
     else:
         print("MuteDatabase cog already loaded.")
 
+    # MUTE FEATURE
     if not client.sentry.get_cog("MuteFeature"):
         print("Adding MuteFeature cog...")
         await client.sentry.add_cog(MuteFeature(client.sentry))
@@ -31,11 +33,13 @@ async def on_ready():
     else:
         print("MuteFeature cog already loaded.")
 
+    # ASK FEATURE
     if not client.sentry.get_cog("AskFeature"):
         print("Adding AskFeature cog...")
         await client.sentry.add_cog(AskFeature(client.sentry))
         print("AskFeature cog added.")
 
+    # ASK LISTENER
     if not client.sentry.get_cog("AskListener"):
         print("Adding AskListener cog...")
         await client.sentry.add_cog(AskListener(client.sentry))

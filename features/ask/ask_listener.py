@@ -62,6 +62,7 @@ class AskListener(commands.Cog):
 					self.message_map[bot_message.id] = message.content
 					return
 
+	# SUPERVISOR REACTIONS
 	@commands.Cog.listener()
 	async def on_reaction_add(self, reaction, user):
 		if user.bot:
