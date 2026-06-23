@@ -184,6 +184,8 @@ class MuteFeature(commands.Cog):
                     reason='Posted a Discord invite link with fewer than 100 messages in the server',
                     feedback_text=f'**HONK!**\n{message.author.mention} has been muted for posting a Discord invite link (fewer than 100 messages in the server).'
                 )
+                await send_feedback(f'Content of message: {message.content}')
+
                 return
 
         # MUTE & DELETE BANNED IMAGES
