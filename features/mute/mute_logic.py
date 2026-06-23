@@ -178,14 +178,13 @@ class MuteFeature(commands.Cog):
                     break
 
             if message_count < 100:
-                # Delete messages from the last 2 minutes
-                two_minutes_ago = discord.utils.utcnow() - datetime.timedelta(minutes=2)
-                try:
-                    async for msg in message.channel.history(limit=100, after=two_minutes_ago):
-                        if msg.author.id == message.author.id:
-                            await msg.delete()
-                except (Forbidden, Exception):
-                    pass
+                # Mute the user and send feedback to staff
+                await self._mute_and_cleanup(
+                    message,
+                    reason='Posted a Discord invite link with fewer than 100 messages in the server',
+                    feedback_text=f'**HONK!**\n{message.author.mention} has been muted for posting a Discord invite link (fewer than 100 messages in the server).'
+                )
+                return
 
         # MUTE & DELETE BANNED IMAGES
         for att in message.attachments:
