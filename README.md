@@ -31,13 +31,18 @@ sentry/
 
 When cloning the project, create a new .env and config.json file in the root directory.
 In .env, add the following:
+```
 `TOKEN=<your bot token>`
+```
+
 In config.json, add the following:
-`{
+```json
+{
   "guildID": "<your guild ID>",
   "ownerID": "<your user ID>",
   "prefix": "<prefered prefix, defaults to !>"
-}`
+}
+```
 
 ## Dependency rules
 
