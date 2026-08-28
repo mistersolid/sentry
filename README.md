@@ -1,7 +1,9 @@
 # Sentry
 
 Last updated: August 27, 2026
+
 Status: In progress
+
 A Kotlin Discord bot built on [Kord](https://github.com/kordlib/kord).
 
 ## LLM usage rules
