@@ -1,1 +1,10 @@
-product: jvm/app
+product: jvm/lib
+
+dependencies:
+  - dev.kord:kord-core:0.18.1
+
+settings:
+  jvm:
+    release: 21
+  kotlin:
+    serialization: json

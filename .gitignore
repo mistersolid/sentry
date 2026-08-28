@@ -1,0 +1,6 @@
+# Dotfiles
+.idea
+.env
+
+# Files
+config.json

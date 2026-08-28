@@ -1,1 +1,9 @@
 product: jvm/app
+
+dependencies:
+  - ch.qos.logback:logback-classic:1.5.20
+  - ./bot
+
+settings:
+  jvm:
+    release: 21

@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+
+# Environment variables
+.env
+
+# Build outputs
+build/
+**/build/
+
+# IDE
+.idea/
+*.iml
+
+# Documentation
+README.md
+**/README.md
+LICENSE.md
+CONTRIBUTING.md
+
+# Example files
+config.example.json
+
+# Scripts
+kotlin.bat

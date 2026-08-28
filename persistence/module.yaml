@@ -1,1 +1,5 @@
 product: jvm/lib
+
+settings:
+  jvm:
+    release: 21
