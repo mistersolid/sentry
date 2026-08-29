@@ -31,11 +31,13 @@ sentry/
 
 When cloning the project, create a new .env and config.json file in the root directory.
 In .env, add the following:
+
 ```
-`TOKEN=<your bot token>`
+TOKEN=<your bot token>
 ```
 
 In config.json, add the following:
+
 ```json
 {
   "guildID": "<your guild ID>",
@@ -46,7 +48,7 @@ In config.json, add the following:
 
 ## Dependency rules
 
-Bot depends on features, which depend on framework and persistence, which depend on core respectively.
+Bot depends on features, which depend on framework and persistence, which depend on core, respectively.
 
 ```
 bot  ──►  features/*  ──►  framework  ──►  core
