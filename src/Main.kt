@@ -1,5 +1,8 @@
+// PACKAGE
+package sentry.bot
+
 // IMPORT
-package sentry.bot import client
+import client
 
 // MAIN
 suspend fun main() {

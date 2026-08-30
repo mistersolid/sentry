@@ -2,6 +2,7 @@ product: jvm/lib
 
 dependencies:
   - dev.kord:kord-core:0.18.1
+  - ../../core
 
 settings:
   jvm:
