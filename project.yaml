@@ -1,9 +1,9 @@
 modules:
-  - bot
-  - core
-  - features/logging
-  - features/phashMatching
-  - features/roleManagement
-  - features/welcomeMessaging
-  - framework
-  - persistence
+  - ./bot
+  - ./core
+  - ./features/logging
+  - ./features/phashMatching
+  - ./features/roleManagement
+  - ./features/welcomeMessaging
+  - ./framework
+  - ./persistence
