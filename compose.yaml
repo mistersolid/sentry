@@ -4,3 +4,5 @@ services:
     env_file: .env
     volumes:
       - ./config.json:/app/config.json:ro
+    environment:
+      - TOKEN=${TOKEN}
