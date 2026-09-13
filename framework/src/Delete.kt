@@ -1,11 +1,10 @@
 // PACKAGE
-package core
+package framework
 
 // CLASS
 // TODO: Write doc
 /**
  *
  */
-class Listen {
-
+class Delete {
 }

@@ -1,5 +1,5 @@
 // PACKAGE
-package core
+package framework
 
 // CLASS
 // TODO: Write doc
