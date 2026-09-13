@@ -23,6 +23,10 @@ const val WEIGHT_DEFAULT = 100
 const val WEIGHT_GENERIC = 65
 
 // CLASS
+// TODO: Write doc
+/**
+ *
+ */
 data class PromptEntry(
     val text: String,
     val weight: Int = WEIGHT_DEFAULT,
@@ -30,6 +34,10 @@ data class PromptEntry(
 )
 
 // FUNCTION
+// TODO: Write doc
+/**
+ *
+ */
 private fun group(
     vararg texts: String,
     weight: Int = WEIGHT_DEFAULT,

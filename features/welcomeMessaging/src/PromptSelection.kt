@@ -6,7 +6,7 @@ import core.Profile
 import kotlin.random.Random
 
 // CONSTANT
-private const val PREFIX = "    "
+private const val PREFIX = "    "   // Prompt indent
 const val PROMPT_COUNT_DEFAULT = 3
 
 // FUNCTION
