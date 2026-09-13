@@ -2,7 +2,7 @@
 package features.phashMatching
 
 // IMPORT
-// OpenCV is a Java package this projects uses with Kotlin interoperability
+// OpenCV is a Java package this projects uses with Kotlin/Java interoperability
 import com.sun.tools.javac.comp.Todo
 import org.opencv.core.Core
 import org.opencv.core.Mat
@@ -10,6 +10,7 @@ import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 
 // FUNCTION
+// TODO: Write doc
 /**
  *
  */
