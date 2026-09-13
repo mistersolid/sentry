@@ -7,4 +7,5 @@ package features.phashMatching
  *
  */
 class PenaltyEnforcing {
+
 }

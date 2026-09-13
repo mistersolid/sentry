@@ -28,6 +28,5 @@ fun perceptualHash(imagePath: String): String {
         }
     }
 
-
     return ""
 }

@@ -9,5 +9,7 @@ suspend fun client() {
     val config = loadConfig()
     val kord = Kord(config.token)
 
-    kord.login()
+    kord.login {
+        intents = config.intents
+    }
 }
