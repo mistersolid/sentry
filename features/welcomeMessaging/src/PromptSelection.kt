@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 // CONSTANT
 private const val PREFIX = "    "
-const val PROMPT_COUNT_DEFAULT = 5
+const val PROMPT_COUNT_DEFAULT = 3
 
 // FUNCTION
 // TODO: Write doc
