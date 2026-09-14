@@ -1,29 +1,13 @@
-// PACKAGE
-package framework
+package features.welcomeMessaging
 
-// IMPORT
 import core.Profile
-import features.welcomeMessaging.choosePrompt
+import loadConfig
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import loadConfig
-
-// COMMAND
-//class LoggingCommand {
-//
-//}
-//
-//class roleManagementCommand {
-//
-//}
-//
-//class phashMatchingCommand {
-//
-//}
 
 @Suppress("unused")
-class PromptCommand {
+class WelcomeCommand {
     suspend fun execute(interaction: ChatInputCommandInteraction) {
         val member = interaction.user.asMember(loadConfig().guildID)
         val profile = member.toProfile()
@@ -36,9 +20,8 @@ class PromptCommand {
 
     companion object {
 
-        // TODO: Write doc
         /**
-         *
+         * Converts [Member] into a [Profile] based on their assigned role IDs.
          */
         fun Member.toProfile(): Profile =
             Profile.fromIds(roleIds.map { it.value.toLong() })

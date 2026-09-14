@@ -3,7 +3,7 @@ import dev.kord.core.Kord
 
 // MAIN
 /**
- * Creates a new [Kord] instance using [loadConfig] to pass the bot token, guild ID, and owner ID.
+ * Creates a new [Kord] instance using [loadConfig] to pass the bot token, guild ID, owner ID, and intents.
  */
 suspend fun client() {
     val config = loadConfig()
