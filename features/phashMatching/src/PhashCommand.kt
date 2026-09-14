@@ -1,19 +1,16 @@
 // PACKAGE
-package features.welcomeMessaging
+package features.phashMatching
 
-// IMPORT
-import dev.kord.core.Kord
-import core.Profile
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.Member
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
+import dev.kord.core.Kord
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import framework.Command
 
-// CLASS
-object WelcomeCommand : Command{
-    override val name = "Welcome Messaging"
+// IMPORT
+
+// OBJECT
+object PhashCommand : Command {
+    override val name = "Phash Matching Feature"
     override val description = "Automatically welcomes new members to the server with random questions " +
             "questions from prompt catalog."
 
