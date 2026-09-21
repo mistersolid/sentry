@@ -4,6 +4,7 @@ dependencies:
   - dev.kord:kord-core:0.18.1
   - ../../core
   - ../../framework
+  - ../../persistence
 
 settings:
   jvm:

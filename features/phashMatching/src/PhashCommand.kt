@@ -1,18 +1,17 @@
 // PACKAGE
 package features.phashMatching
 
+// IMPORT
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import framework.Command
 
-// IMPORT
-
 // OBJECT
 object PhashCommand : Command {
-    override val name = "Phash Matching Feature"
-    override val description = "Automatically welcomes new members to the server with random questions " +
-            "questions from prompt catalog."
+    override val name = "phash-matching"
+    override val description = "Continuously monitors image uploads, converting them to a pHash and matching them to " +
+            "existing values. Deletes any images that match a pHash and mutes the user."
 
     override suspend fun register(kord: Kord, guildID: Snowflake?) {
         TODO("Not yet implemented")

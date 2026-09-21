@@ -1,21 +1,20 @@
 // IMPORT
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
 import features.phashMatching.PhashCommand
 import features.welcomeMessaging.WelcomeCommand
 import framework.Command
-import kotlinx.serialization.json.JsonNull.content
+import persistence.ConfigStore
 
 // MAIN
-val commands: List<Command> = listOf(WelcomeCommand, PhashCommand)
-
 suspend fun client() {
     val config = loadConfig()
     val kord = Kord(config.token)
+    val store = ConfigStore()
 
+    val commands: List<Command> = listOf(WelcomeCommand(store), PhashCommand)
     val byName = commands.associateBy { it.name }
     commands.forEach { it.register(kord, config.guildID) }
 

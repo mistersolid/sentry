@@ -3,6 +3,7 @@ product: jvm/lib
 dependencies:
   - dev.kord:kord-core:0.18.1
   - ../framework
+  - ../persistence
   - ../features/welcomeMessaging
   - ../features/phashMatching
 

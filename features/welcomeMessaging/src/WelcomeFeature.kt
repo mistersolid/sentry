@@ -3,21 +3,17 @@ package features.welcomeMessaging
 
 // IMPORT
 import core.Profile
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.Kord
 import dev.kord.core.entity.Member
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
+import dev.kord.core.event.guild.MemberUpdateEvent
+import dev.kord.core.on
+import persistence.GuildConfigStore
 
 // CLASS
-class WelcomeFeature {
-    suspend fun execute(interaction: ChatInputCommandInteraction, guildID: Snowflake) {
-        val member = interaction.user.asMember(guildID)
+class WelcomeFeature(private val store: GuildConfigStore) {
+    suspend fun buildWelcome(member: Member): String {
         val profile = member.toProfile()
-        val prompts = choosePrompt(profile)
-
-        interaction.respondPublic {
-            content = prompts.joinToString("\n")
-        }
+        return choosePrompt(profile).joinToString("\n")
     }
 
     companion object {
@@ -27,5 +23,12 @@ class WelcomeFeature {
          */
         fun Member.toProfile(): Profile =
             Profile.fromIds(roleIds.map { it.value.toLong() })
+    }
+
+    fun install(kord: Kord) {
+        kord.on<MemberUpdateEvent> {
+            val wasPending = old?.isPending ?: return@on
+            if (wasPending && !member.isPending) { buildWelcome(member) }
+        }
     }
 }

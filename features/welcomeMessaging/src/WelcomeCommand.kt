@@ -3,24 +3,27 @@ package features.welcomeMessaging
 
 // IMPORT
 import dev.kord.core.Kord
-import core.Profile
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.Member
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import framework.Command
+import persistence.GuildConfigStore
 
 // CLASS
-object WelcomeCommand : Command{
-    override val name = "Welcome Messaging"
-    override val description = "Automatically welcomes new members to the server with random questions " +
-            "questions from prompt catalog."
+class WelcomeCommand(private val store: GuildConfigStore) : Command {
+    override val name = "welcome-messaging"
+    override val description = "Toggle automatic welcome messages for new members"
 
     override suspend fun register(kord: Kord, guildID: Snowflake?) {
-        TODO("Not yet implemented")
+        // Sub commands
     }
+
     override suspend fun execute(event: ChatInputCommandInteractionCreateEvent) {
-        TODO("Not yet implemented")
+        val guildId = event.interaction.data.guildId.value ?: return
+        val enable = event.interaction.command.booleans["enabled"] ?: return
+        store.setWelcomeEnabled(guildId, enable)
+        event.interaction.respondEphemeral {
+            content = if (enable) "Welcome messages on." else "Welcome messages off."
+        }
     }
 }
