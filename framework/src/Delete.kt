@@ -2,7 +2,6 @@
 package framework
 
 // CLASS
-// TODO: Write doc
 /**
  *
  */

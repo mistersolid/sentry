@@ -81,6 +81,7 @@ class Config(
 fun loadConfig(path: String = "config.json"): Config {
     val f = File(path)
     require(f.exists()) { "Missing ${f.absolutePath}" }
+
     return Config(
         token = System.getenv("TOKEN") ?: error("TOKEN is not set"),
         file = Json.decodeFromString(f.readText()),

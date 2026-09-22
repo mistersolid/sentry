@@ -5,13 +5,6 @@ package persistence
 import dev.kord.common.entity.Snowflake
 import org.jetbrains.exposed.sql.Table
 
-// INTERFACE
-interface GuildConfigStore {
-    suspend fun isWelcomeEnabled(guildId: Snowflake): Boolean
-    suspend fun setWelcomeEnabled(guildId: Snowflake, enabled: Boolean)
-    suspend fun welcomeChannel(guildId: Snowflake): Snowflake?
-}
-
 // OBJECT
 object GuildConfigs : Table("guild_configs") {
     // Guild
@@ -38,4 +31,11 @@ class ConfigStore(path: String = "bot.db") : GuildConfigStore {
     override suspend fun welcomeChannel(guildId: Snowflake): Snowflake? {
         TODO("Not yet implemented")
     }
+}
+
+// INTERFACE
+interface GuildConfigStore {
+    suspend fun isWelcomeEnabled(guildId: Snowflake): Boolean
+    suspend fun setWelcomeEnabled(guildId: Snowflake, enabled: Boolean)
+    suspend fun welcomeChannel(guildId: Snowflake): Snowflake?
 }

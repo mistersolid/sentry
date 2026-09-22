@@ -2,7 +2,6 @@
 package features.phashMatching
 
 // CLASS
-// TODO: Write doc
 /**
  *
  */

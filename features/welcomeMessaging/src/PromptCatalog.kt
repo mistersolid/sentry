@@ -18,14 +18,15 @@ import core.Profile
 
 // CONSTANT
 const val WEIGHT_DEFAULT = 100
-
-/** Generic prompts are drawn less often than role-specific ones. */
-const val WEIGHT_GENERIC = 65
+const val WEIGHT_GENERIC = 65   // Generic prompts are drawn less often than role-specific ones.
 
 // CLASS
-// TODO: Write doc
 /**
+ * Represents a welcome prompt entry with a selection weight and eligibility condition.
  *
+ * @property text The prompt text or question to display.
+ * @property weight The relative weight determining how frequently the prompt is sampled during selection.
+ * @property applies A predicate that determines whether this prompt applies to a given user [Profile].
  */
 data class PromptEntry(
     val text: String,
@@ -34,9 +35,13 @@ data class PromptEntry(
 )
 
 // FUNCTION
-// TODO: Write doc
 /**
+ * Creates a list of [PromptEntry] instances given [texts], [weight], and [applies].
  *
+ * @param texts The prompt text or question to display.
+ * @param weight The relative weight determining how frequently the prompt is sampled during selection.
+ * @param applies applies A predicate that determines whether this prompt applies to a given user [Profile].
+ * @return A list of [PromptEntry] instances.
  */
 private fun group(
     vararg texts: String,

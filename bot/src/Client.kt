@@ -14,7 +14,10 @@ suspend fun client() {
     val kord = Kord(config.token)
     val store = ConfigStore()
 
-    val commands: List<Command> = listOf(WelcomeCommand(store), PhashCommand)
+    val commands: List<Command> = listOf(
+        WelcomeCommand(store),
+        PhashCommand
+    )
     val byName = commands.associateBy { it.name }
     commands.forEach { it.register(kord, config.guildID) }
 
