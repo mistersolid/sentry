@@ -2,11 +2,13 @@
 package persistence
 
 // IMPORT
-import dev.kord.common.entity.Snowflake
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 
 // OBJECT
-object GuildConfigs : Table("guild_configs") {
+internal object GuildConfig : Table("guild_config") {
     // Guild
     val guildID = long("guild_id")
     override val primaryKey = PrimaryKey(guildID)
@@ -16,26 +18,38 @@ object GuildConfigs : Table("guild_configs") {
     val welcomeChannel = long("welcome_channel").nullable()
 
     // pHash Matching Feature
+    val pHashMatchEnabled = bool("p_hash_matching_enabled").default(true)
 }
 
 // CLASS
-class ConfigStore(path: String = "bot.db") : GuildConfigStore {
-    override suspend fun isWelcomeEnabled(guildId: Snowflake): Boolean {
+internal class ConfigStore: GuildConfigStore {
+    @Suppress("UNUSED")
+    override suspend fun isWelcomeEnabled(guildId: Long): Boolean {
         TODO("Not yet implemented")
     }
 
-    override suspend fun setWelcomeEnabled(guildId: Snowflake, enabled: Boolean) {
+    @Suppress("UNUSED")
+    override suspend fun setWelcomeEnabled(guildId: Long, enabled: Boolean) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun welcomeChannel(guildId: Snowflake): Snowflake? {
+    @Suppress("UNUSED")
+    override suspend fun welcomeChannel(guildId: Long): Long? {
+        TODO("Not yet implemented")
+    }
+
+    @Suppress("UNUSED")
+    override suspend fun phashMatchEnabled(guildId: Long): Boolean {
         TODO("Not yet implemented")
     }
 }
 
-// INTERFACE
-interface GuildConfigStore {
-    suspend fun isWelcomeEnabled(guildId: Snowflake): Boolean
-    suspend fun setWelcomeEnabled(guildId: Snowflake, enabled: Boolean)
-    suspend fun welcomeChannel(guildId: Snowflake): Snowflake?
+// OBJECT
+internal object Database {
+    fun connect(path: String = "bot.db") {
+        Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
+        transaction {
+            SchemaUtils.create(GuildConfig)
+        }
+    }
 }

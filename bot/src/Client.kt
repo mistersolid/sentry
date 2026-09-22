@@ -6,13 +6,13 @@ import dev.kord.core.on
 import features.phashMatching.PhashCommand
 import features.welcomeMessaging.WelcomeCommand
 import framework.Command
-import persistence.ConfigStore
+import persistence.GuildConfigStoreFactory
 
 // MAIN
 suspend fun client() {
     val config = loadConfig()
     val kord = Kord(config.token)
-    val store = ConfigStore()
+    val store = GuildConfigStoreFactory.create()
 
     val commands: List<Command> = listOf(
         WelcomeCommand(store),
