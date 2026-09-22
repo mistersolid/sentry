@@ -2,7 +2,6 @@
 package framework
 
 // IMPORT
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
@@ -20,6 +19,6 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 interface Command {
     val name: String
     val description: String
-    suspend fun register(kord: Kord, guildID: Snowflake?)
+    suspend fun register(kord: Kord)
     suspend fun execute(event: ChatInputCommandInteractionCreateEvent)
 }

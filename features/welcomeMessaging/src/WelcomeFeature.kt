@@ -10,6 +10,15 @@ import dev.kord.core.on
 import persistence.GuildConfigStore
 
 // CLASS
+/**
+ * A feature implementing welcome message functionality for guild members.
+ *
+ * This class provides the capability to generate and send personalized welcome messages
+ * for users in a guild, based on their roles and applicable prompts. It listens to member
+ * updates and triggers the welcome message process when a member completes their pending state.
+ *
+ * @property store The configuration store used to retrieve guild-specific settings.
+ */
 class WelcomeFeature(private val store: GuildConfigStore) {
     suspend fun buildWelcome(member: Member): String {
         val profile = member.toProfile()
