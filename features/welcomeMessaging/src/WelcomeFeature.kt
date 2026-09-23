@@ -7,22 +7,24 @@ import dev.kord.core.Kord
 import dev.kord.core.entity.Member
 import dev.kord.core.event.guild.MemberUpdateEvent
 import dev.kord.core.on
+import jdk.internal.net.http.common.Log.channel
 import persistence.GuildConfigStore
 
 // CLASS
 /**
  * A feature implementing welcome message functionality for guild members.
  *
- * This class provides the capability to generate and send personalized welcome messages
+ * This class provides the ability to generate and send welcome messages
  * for users in a guild, based on their roles and applicable prompts. It listens to member
  * updates and triggers the welcome message process when a member completes their pending state.
  *
  * @property store The configuration store used to retrieve guild-specific settings.
  */
 class WelcomeFeature(private val store: GuildConfigStore) {
-    suspend fun buildWelcome(member: Member): String {
+    fun buildWelcome(member: Member): String {
         val profile = member.toProfile()
-        return choosePrompt(profile).joinToString("\n")
+        val lines = choosePrompt(profile)
+        return "${member.mention} " + lines.joinToString("\n")
     }
 
     companion object {
@@ -37,7 +39,17 @@ class WelcomeFeature(private val store: GuildConfigStore) {
     fun install(kord: Kord) {
         kord.on<MemberUpdateEvent> {
             val wasPending = old?.isPending ?: return@on
-            if (wasPending && !member.isPending) { buildWelcome(member) }
+            if (wasPending && !member.isPending) {
+                val guildId = member.guildId.value.toLong()
+                if (!store.isWelcomeEnabled(guildId)) return@on
+
+                val guild = member.getGuild()
+                val channel = guild.systemChannel ?: return@on
+
+                val text = buildWelcome(member)
+
+                channel.createMessage(text)
+            }
         }
     }
 }

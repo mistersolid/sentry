@@ -2,6 +2,7 @@
 package framework
 
 // IMPORT
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 

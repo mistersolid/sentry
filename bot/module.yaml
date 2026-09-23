@@ -1,6 +1,7 @@
 product: jvm/lib
 
 dependencies:
+  - ch.qos.logback:logback-classic:1.5.6
   - dev.kord:kord-core:0.18.1
   - ../framework
   - ../persistence

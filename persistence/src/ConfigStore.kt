@@ -15,10 +15,9 @@ internal object GuildConfig : Table("guild_config") {
 
     // Welcome Messaging Feature
     val welcomeEnabled = bool("welcome_enabled").default(true)
-    val welcomeChannel = long("welcome_channel").nullable()
 
     // pHash Matching Feature
-    val pHashMatchEnabled = bool("p_hash_matching_enabled").default(true)
+    val pHashMatchEnabled = bool("phash_matching_enabled").default(true)
 }
 
 // CLASS
@@ -30,11 +29,6 @@ internal class ConfigStore: GuildConfigStore {
 
     @Suppress("UNUSED")
     override suspend fun setWelcomeEnabled(guildId: Long, enabled: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    @Suppress("UNUSED")
-    override suspend fun welcomeChannel(guildId: Long): Long? {
         TODO("Not yet implemented")
     }
 
