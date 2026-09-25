@@ -18,7 +18,6 @@ internal object GuildConfig : Table("guild_config") {
 
     // pHash Matching Feature
     val phashEnabled = bool("phash_enabled").default(true)
-    val phashValues = Table("phash_values")
 }
 
 // CLASS
