@@ -23,7 +23,7 @@ suspend fun client() {
     // COMMAND
     val commands: List<Command> = listOf(
         WelcomeCommand(store),
-        PhashCommand
+        PhashCommand(store)
     )
     val byName = commands.associateBy { it.name }
     commands.forEach { it.register(kord) }
@@ -31,7 +31,7 @@ suspend fun client() {
     kord.on<ChatInputCommandInteractionCreateEvent> {
         val handler = byName[interaction.command.rootName] ?: return@on
         try {
-            handler.execute(this)
+            handler.action(this)
         } catch (e: Exception) {
             logger.error("Command '${handler.name}' failed", e)
             interaction.respondEphemeral {

@@ -17,7 +17,8 @@ internal object GuildConfig : Table("guild_config") {
     val welcomeEnabled = bool("welcome_enabled").default(true)
 
     // pHash Matching Feature
-    val pHashMatchEnabled = bool("phash_matching_enabled").default(true)
+    val phashEnabled = bool("phash_enabled").default(true)
+    val phashValues = Table("phash_values")
 }
 
 // CLASS
@@ -32,8 +33,11 @@ internal class ConfigStore: GuildConfigStore {
         TODO("Not yet implemented")
     }
 
-    @Suppress("UNUSED")
-    override suspend fun phashMatchEnabled(guildId: Long): Boolean {
+    override suspend fun isPhashEnabled(guildId: Long): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun setPhashEnabled(guildId: Long, enabled: Boolean) {
         TODO("Not yet implemented")
     }
 }

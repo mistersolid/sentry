@@ -7,7 +7,6 @@ import dev.kord.core.Kord
 import dev.kord.core.entity.Member
 import dev.kord.core.event.guild.MemberUpdateEvent
 import dev.kord.core.on
-import jdk.internal.net.http.common.Log.channel
 import persistence.GuildConfigStore
 
 // CLASS
@@ -21,7 +20,7 @@ import persistence.GuildConfigStore
  * @property store The configuration store used to retrieve guild-specific settings.
  */
 class WelcomeFeature(private val store: GuildConfigStore) {
-    fun buildWelcome(member: Member): String {
+    fun build(member: Member): String {
         val profile = member.toProfile()
         val lines = choosePrompt(profile)
         return "${member.mention} " + lines.joinToString("\n")
@@ -36,6 +35,16 @@ class WelcomeFeature(private val store: GuildConfigStore) {
             Profile.fromIds(roleIds.map { it.value.toLong() })
     }
 
+    /**
+     * Installs the welcome message handler for the specified [Kord] instance.
+     *
+     * This method listens for [MemberUpdateEvent]s, specifically checking if a guild member
+     * transitions from a "pending" state to a confirmed state. When this happens, it sends
+     * a welcome message to the guild's system channel if the feature is enabled
+     * for the corresponding guild.
+     *
+     * @param kord The [Kord] instance used to handle events and send messages.
+     */
     fun install(kord: Kord) {
         kord.on<MemberUpdateEvent> {
             val wasPending = old?.isPending ?: return@on
@@ -46,7 +55,7 @@ class WelcomeFeature(private val store: GuildConfigStore) {
                 val guild = member.getGuild()
                 val channel = guild.systemChannel ?: return@on
 
-                val text = buildWelcome(member)
+                val text = build(member)
 
                 channel.createMessage(text)
             }

@@ -4,6 +4,8 @@ dependencies:
   - dev.kord:kord-core:0.18.1
   - org.opencv:opencv:5.0.0.1
   - ../../framework
+  - ../../persistence
+  - ../../core
 
 settings:
   jvm:

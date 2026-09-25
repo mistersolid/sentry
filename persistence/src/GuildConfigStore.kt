@@ -9,7 +9,8 @@ package persistence
 interface GuildConfigStore {
     suspend fun isWelcomeEnabled(guildId: Long): Boolean
     suspend fun setWelcomeEnabled(guildId: Long, enabled: Boolean)
-    suspend fun phashMatchEnabled(guildId: Long): Boolean
+    suspend fun isPhashEnabled(guildId: Long): Boolean
+    suspend fun setPhashEnabled(guildId: Long, enabled: Boolean)
 }
 
 /**

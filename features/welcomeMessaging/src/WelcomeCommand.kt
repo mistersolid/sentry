@@ -2,7 +2,6 @@
 package features.welcomeMessaging
 
 // IMPORT
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
@@ -32,7 +31,7 @@ class WelcomeCommand(private val store: GuildConfigStore): Command {
         }
     }
 
-    override suspend fun execute(event: ChatInputCommandInteractionCreateEvent) {
+    override suspend fun action(event: ChatInputCommandInteractionCreateEvent) {
         val guildId = event.interaction.data.guildId.value ?: return
         val toggle = event.interaction.command.booleans["toggle"] ?: return
 

@@ -6,6 +6,7 @@ package features.phashMatching
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.MatOfByte
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import kotlin.math.sqrt
@@ -16,18 +17,23 @@ private const val HIGHFREQ_FACTOR = 4
 
 // FUNCTION
 /**
- * Computes a 64-bit perceptual hash (pHash) for the image at [imgPath] and returns it as a 16-character hex string.
+ * Computes a 64-bit perceptual hash (pHash) for the image at [imgSource] and returns it as a 16-character hex string.
  *
  * The algorithm converts the image to grayscale, resizes it to 32x32, computes the Discrete Cosine Transform (DCT),
  * extracts the top-left 8x8 low-frequency components (with orthonormal correction for SciPy/imagehash compatibility),
  * thresholds them against their median value, and encodes the resulting 64 bits into hexadecimal format.
  *
- * @param imgPath the path to the image file.
+ * @param imgSource the path to the image file.
  * @return a 16-character hexadecimal string representing the perceptual hash.
  * @throws IllegalArgumentException if the image cannot be loaded or is empty.
  */
-fun perceptualHash(imgPath: String): String {
-    val img = Imgcodecs.imread(imgPath, Imgcodecs.IMREAD_COLOR)
+fun perceptualHash(imgSource: String): String {
+    val img = if (imgSource.startsWith("http://") || imgSource.startsWith("https://")) {
+        val bytes = java.net.URL(imgSource).readBytes()
+        Imgcodecs.imdecode(MatOfByte(*bytes), Imgcodecs.IMREAD_COLOR)
+    } else {
+        Imgcodecs.imread(imgSource, Imgcodecs.IMREAD_COLOR)
+    }
     require(!img.empty()) { "Image is empty" }
 
     val gray = Mat()
@@ -86,7 +92,7 @@ fun perceptualHash(imgPath: String): String {
     }
 }
 
-/** Hamming distance between two hex phashes, equivalent to `hash1 - hash2`. */
+/** Hamming distance between two hex pHashes, equivalent to `hash1 - hash2`. */
 fun hammingDistance(a: String, b: String): Int {
     require(a.length == b.length) { "Hash length mismatch" }
     return a.indices.sumOf { (a[it].digitToInt(16) xor b[it].digitToInt(16)).countOneBits() }
