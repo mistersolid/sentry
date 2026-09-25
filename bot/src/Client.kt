@@ -4,11 +4,13 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
 import features.phashMatching.PhashCommand
+import features.phashMatching.PhashFeature
 import features.welcomeMessaging.WelcomeCommand
 import features.welcomeMessaging.WelcomeFeature
 import framework.Command
 import org.slf4j.LoggerFactory
 import persistence.GuildConfigStoreFactory
+import persistence.GuildValuesFactory
 
 // VALUE
 private val logger = LoggerFactory.getLogger("client")
@@ -19,6 +21,7 @@ suspend fun client() {
     val config = loadConfig()
     val kord = Kord(config.token)
     val store = GuildConfigStoreFactory.create()
+    val values = GuildValuesFactory.create()
 
     // COMMAND
     val commands: List<Command> = listOf(
@@ -42,6 +45,7 @@ suspend fun client() {
 
     // FEATURE
     WelcomeFeature(store).install(kord)
+    PhashFeature(store, values).install(kord)
 
     // INSTANCE
     kord.login {

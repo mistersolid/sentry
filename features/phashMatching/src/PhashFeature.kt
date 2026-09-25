@@ -4,28 +4,33 @@ package features.phashMatching
 // IMPORT
 import dev.kord.core.Kord
 import dev.kord.core.behavior.ban
-import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import persistence.GuildConfigStore
+import persistence.GuildValuesStore
 import kotlin.time.Duration.Companion.minutes
 
 // CLASS
-class PhashFeature(private val store: GuildConfigStore) {
-    fun build(message: Message, member: Member): Boolean {
-        if (message.attachments.isNotEmpty()) {
-            for (i in message.attachments) {
-                val url = i.proxyUrl
-                perceptualHash(url)
-            }
-        }
+class PhashFeature(private val store: GuildConfigStore, private val values: GuildValuesStore) {
+    private val threshold = 8
 
-        if (message.embeds.isNotEmpty()) {
-            for (i in message.embeds) {
-                val url = i.thumbnail?.url ?: ""
-                val hash = perceptualHash(url)
+    suspend fun build(message: Message): Boolean {
+        val urls = message.attachments.map { it.url } + message.embeds.mapNotNull { it.thumbnail?.url }
+
+        if (urls.isEmpty()) return false
+
+        val hashList = values.getValues()
+
+        for (url in urls) {
+            val hash = try {
+                perceptualHash(url)
+            } catch (e: Exception) {
+                print(e)
+                continue
             }
+
+            if (hashList.any { hammingDistance(it, hash) <= threshold }) return true
         }
 
         return false
@@ -43,8 +48,10 @@ class PhashFeature(private val store: GuildConfigStore) {
      */
     fun install(kord: Kord) {
         kord.on<MessageCreateEvent> {
-            val evaluate = build(this.message, this.member ?: return@on)
+            val evaluate = build(this.message)
+            val guild = this.guildId?.value?.toLong() ?: return@on
 
+            if (!store.isPhashEnabled(guild)) return@on
             if (evaluate) {
                 val member = this.message.getAuthorAsMember()
                 val guild = member.getGuild()

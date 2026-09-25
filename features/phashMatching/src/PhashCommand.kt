@@ -35,7 +35,7 @@ class PhashCommand(private val store: GuildConfigStore): Command {
         val guildId = event.interaction.data.guildId.value ?: return
         val toggle = event.interaction.command.booleans["toggle"] ?: return
 
-        store.setPhashEnabled(guildId.value.toLong(), toggle)
+        store.togglePhash(guildId.value.toLong(), toggle)
 
         event.interaction.respondEphemeral {
             content = if (toggle) "pHash matching on." else "pHash matching off."

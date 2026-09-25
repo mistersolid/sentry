@@ -8,9 +8,9 @@ package persistence
  */
 interface GuildConfigStore {
     suspend fun isWelcomeEnabled(guildId: Long): Boolean
-    suspend fun setWelcomeEnabled(guildId: Long, enabled: Boolean)
+    suspend fun toggleWelcome(guildId: Long, enabled: Boolean)
     suspend fun isPhashEnabled(guildId: Long): Boolean
-    suspend fun setPhashEnabled(guildId: Long, enabled: Boolean)
+    suspend fun togglePhash(guildId: Long, enabled: Boolean)
 }
 
 /**
@@ -35,7 +35,7 @@ object GuildConfigStoreFactory {
      * @return An implementation of [GuildConfigStore] for managing guild-specific configurations.
      */
     fun create(path: String = "bot.db"): GuildConfigStore {
-        Database.connect(path)
+        Config.connect(path)
 
         return ConfigStore()
     }

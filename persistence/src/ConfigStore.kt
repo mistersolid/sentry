@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 // OBJECT
 internal object GuildConfig : Table("guild_config") {
@@ -28,21 +29,37 @@ internal class ConfigStore: GuildConfigStore {
     }
 
     @Suppress("UNUSED")
-    override suspend fun setWelcomeEnabled(guildId: Long, enabled: Boolean) {
-        TODO("Not yet implemented")
+    override suspend fun toggleWelcome(guildId: Long, enabled: Boolean) {
+        if (enabled) {
+            GuildConfig.update({ GuildConfig.guildID eq guildId }) {
+                it[welcomeEnabled] = true
+            }
+        } else {
+            GuildConfig.update({ GuildConfig.guildID eq guildId }) {
+                it[welcomeEnabled] = false
+            }
+        }
     }
 
     override suspend fun isPhashEnabled(guildId: Long): Boolean {
         TODO("Not yet implemented")
     }
 
-    override suspend fun setPhashEnabled(guildId: Long, enabled: Boolean) {
-        TODO("Not yet implemented")
+    override suspend fun togglePhash(guildId: Long, enabled: Boolean) {
+        if (enabled) {
+            GuildConfig.update( { GuildConfig.guildID eq guildId }) {
+                it[phashEnabled] = true
+            }
+        } else {
+            GuildConfig.update({ GuildConfig.guildID eq guildId }) {
+                it[phashEnabled] = false
+            }
+        }
     }
 }
 
 // OBJECT
-internal object Database {
+internal object Config {
     fun connect(path: String = "bot.db") {
         Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
         transaction {
