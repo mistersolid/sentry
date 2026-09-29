@@ -1,36 +1,59 @@
 # Sentry
 
-Last updated: August 27, 2026
+Last updated: September 29, 2026
 
-Status: In progress
+This file was made entirely by generative AI. Pending human review.
 
-A Kotlin Discord bot built on [Kord](https://github.com/kordlib/kord).
+Sentry is a Kotlin Discord bot built on [Kord](https://github.com/kordlib/kord). The `bot/` module is the application entry point and is organized alongside small JVM modules so domain logic, Discord integration, persistence, and features remain separately testable.
 
-## LLM usage rules
+## Generative AI usage
 
-Contributors are expected to implement functionality on their own, only using LLMs in a manner similar to 
-StackOverflow, Google, YouTube, etc.
-Do not copy and paste large blocks of code from LLMs. You may use LLMs for generating documentation and tests, 
-given that you review the output and ensure accuracy.
+Contributors are expected to implement functionality on their own, only using LLMs in a manner similar to StackOverflow, Google, YouTube, etc. Do not copy and paste large blocks of code from LLMs. You may use LLMs for generating documentation and tests, given that you review the output and ensure accuracy.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    Entry["bot: application entry point"] --> Bot["bot: startup and Kord client"]
+    Bot --> Features["features: user-facing behavior"]
+    Bot --> Framework["framework: command contract"]
+    Bot --> Persistence["persistence: SQLite stores"]
+    Features --> Core["core: role and profile domain"]
+    Features --> Framework
+    Features --> Persistence
+    Framework --> Core
+    Persistence --> Core
+```
 
 ## Module map
 
-```
-sentry/
-├── src/   Kotlin-Toolchain entry point
-├── bot/           main(), config load, feature registration
-├── core/          Pure domain: models, rules. No Kord or Discord API
-├── persistence/   Database access
-├── framework/     Bot machinery: Feature API, commands, config
-├── features/
-│   ├── logging/
-│   ├── phashMatching/
-│   ├── roleManagement/
-│   └── welcomeMessaging/
+| Module | Responsibility |
+| --- | --- |
+| `bot/` | Application entry point, config loading, command registration, feature installation, and login |
+| `core/` | Pure domain models and profile rules; no Kord or database dependency |
+| `persistence/` | SQLite-backed guild settings and pHash value storage |
+| `framework/` | Shared Discord command abstraction |
+| `features/` | Logging, role management, pHash matching, and welcome messaging |
+
+The intended dependency direction is:
+
+```mermaid
+flowchart LR
+    bot --> features
+    bot --> framework
+    bot --> persistence
+    features --> framework
+    features --> persistence
+    features --> core
+    framework --> core
+    persistence --> core
 ```
 
-When cloning the project, create a new .env and config.json file in the root directory.
-In .env, add the following:
+Features must not depend on one another. Shared code belongs in `core` or `framework`.
+
+## Local setup
+
+Create a new `.env` and `config.json` file in the repository root. In `.env`, add:
 
 ```
 TOKEN=<your bot token>
@@ -42,24 +65,14 @@ In config.json, add the following:
 {
   "guildID": "<your guild ID>",
   "ownerID": "<your user ID>",
-  "prefix": "<prefered prefix, defaults to !>"
+  "prefix": "<preferred prefix, defaults to !>"
 }
 ```
 
-## Dependency rules
+Run the project with the repository's Kotlin toolchain. Docker builds the executable with JDK 21 and runs it on a JRE 21 image; `compose.yaml` mounts `config.json` into the container and passes `TOKEN` through the environment.
 
-Bot depends on features, which depend on framework and persistence, which depend on core, respectively.
+## Review sign-off
 
-```
-bot  ──►  features/*  ──►  framework  ──►  core
-                       └─►  persistence ──►  core
-```
-
-- `core` depends on nothing. No Kord or database.
-- `persistence` depends on `core` only.
-- `framework` depends on `core` and `persistence`. Never on a feature.
-- `features/*` depend on the three above. **Never on each other.**
-- `bot` depends on `framework`, `features`, and `persistence`.
-
-If two features need to share code, push it down into `core` or
-`framework`. Do not add a feature-to-feature dependency.
+- [ ] Developer review completed
+- Reviewer: ____________________
+- Date: ____________________

@@ -97,3 +97,9 @@ attachments. Run the module tests with:
 ```text
 ./kotlin test --include-module=phashMatching
 ```
+
+## Review sign-off
+
+- [ ] Developer review completed
+- Reviewer: ____________________
+- Date: ____________________

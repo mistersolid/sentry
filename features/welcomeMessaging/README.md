@@ -100,3 +100,9 @@ eligibility, duplicate removal, weight handling, zero and negative counts, and
 the shorter-result behavior when the eligible pool is small. Feature tests
 should cover the pending-to-confirmed transition, disabled guilds, missing
 system channels, and the generated message format.
+
+## Review sign-off
+
+- [ ] Developer review completed
+- Reviewer: ____________________
+- Date: ____________________
