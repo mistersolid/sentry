@@ -12,19 +12,6 @@ Contributors are expected to implement functionality on their own, only using LL
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    Entry["bot: application entry point"] --> Bot["bot: startup and Kord client"]
-    Bot --> Features["features: user-facing behavior"]
-    Bot --> Framework["framework: command contract"]
-    Bot --> Persistence["persistence: SQLite stores"]
-    Features --> Core["core: role and profile domain"]
-    Features --> Framework
-    Features --> Persistence
-    Framework --> Core
-    Persistence --> Core
-```
-
 ## Module map
 
 | Module | Responsibility |
