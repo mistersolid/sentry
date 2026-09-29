@@ -20,5 +20,5 @@ interface Command {
     val name: String
     val description: String
     suspend fun register(kord: Kord)
-    suspend fun action(event: ChatInputCommandInteractionCreateEvent)
+    suspend fun handle(event: ChatInputCommandInteractionCreateEvent)
 }

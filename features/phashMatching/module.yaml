@@ -2,10 +2,14 @@ product: jvm/lib
 
 dependencies:
   - dev.kord:kord-core:0.18.1
-  - org.opencv:opencv:5.0.0.1
+  - org.openpnp:opencv:4.9.0-0
   - ../../framework
   - ../../persistence
   - ../../core
+
+test-dependencies:
+  - io.mockk:mockk:1.13.17
+  - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2
 
 settings:
   jvm:

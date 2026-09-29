@@ -222,7 +222,6 @@ val promptCatalog: List<PromptEntry> = buildList {
             "🧰 What skill from your degree do you use the most in everyday life?",
             "✨ What inspired you to get into STEM?",
             "📢 What subject do you wish more people understood?",
-            "🚧 What's a common misconception about your field?",
             "🔗 Which interdisciplinary field fascinates you most?",
             "🔬 What research tool or method has made the biggest difference in your work?",
             "🛠️ What are you working on right now? (Project or otherwise)",

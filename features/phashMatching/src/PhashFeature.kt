@@ -13,8 +13,14 @@ import kotlin.time.Duration.Companion.minutes
 
 // CLASS
 class PhashFeature(private val store: GuildConfigStore, private val values: GuildValuesStore) {
-    private val threshold = 8
 
+    /**
+     * Analyzes a given message for image attachments and embedded thumbnails, computes their perceptual hashes,
+     * and checks if they match any stored hashes within a predefined similarity threshold.
+     *
+     * @param message The message containing attachments and embeds to analyze.
+     * @return `true` if any image's hash matches an existing stored hash within the similarity threshold; `false` otherwise.
+     */
     suspend fun build(message: Message): Boolean {
         val urls = message.attachments.map { it.url } + message.embeds.mapNotNull { it.thumbnail?.url }
 
@@ -30,7 +36,7 @@ class PhashFeature(private val store: GuildConfigStore, private val values: Guil
                 continue
             }
 
-            if (hashList.any { hammingDistance(it, hash) <= threshold }) return true
+            if (hashList.any { hammingDistance(it, hash) <= HASH_THRESHOLD }) return true
         }
 
         return false

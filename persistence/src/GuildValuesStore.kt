@@ -6,6 +6,7 @@ package persistence
 // OBJECT
 interface GuildValuesStore {
     suspend fun getValues(): List<String>
+    suspend fun addValue(value: String)
 }
 
 object GuildValuesFactory {

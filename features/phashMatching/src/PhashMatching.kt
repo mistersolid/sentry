@@ -14,6 +14,7 @@ import kotlin.math.sqrt
 // CONSTANT
 private const val HASH_SIZE = 8
 private const val HIGHFREQ_FACTOR = 4
+const val HASH_THRESHOLD = 8
 
 // FUNCTION
 /**

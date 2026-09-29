@@ -6,15 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
 // OBJECT
 object ValuesConfig : Table("phash_values") {
     val id = integer("id").autoIncrement()
-    val guildID = long("guild_id").references(GuildConfig.guildID)
     val hashValue = varchar("hash_value", 16)
-
     override val primaryKey = PrimaryKey(id)
 }
 
@@ -45,9 +44,32 @@ internal class ValuesStore: GuildValuesStore {
                 .map { it[ValuesConfig.hashValue] }
         }
     }
+
+    /**
+     * Adds a new hash value to the database.
+     *
+     * This method performs a suspended database transaction to insert the specified
+     * hash value into the `phash_values` table. The transaction runs on an IO dispatcher
+     * to ensure the operation is executed on a separate IO thread.
+     *
+     * @param value The hash value to be added to the database.
+     */
+    override suspend fun addValue(value: String) {
+        newSuspendedTransaction(Dispatchers.IO) {
+            ValuesConfig.insert {
+                it[hashValue] = value
+            }
+        }
+    }
 }
 
 // OBJECT
+/**
+ * Utility object responsible for managing database connection and schema creation for values storage.
+ *
+ * This object establishes a connection to an SQLite database and initializes the schema required
+ * to store and manage values. The default database file is named "values.db".
+ */
 internal object Values {
     fun connect(path: String = "values.db") {
         Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
