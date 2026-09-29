@@ -1,8 +1,6 @@
 // PACKAGE
 package persistence
 
-// IMPORT
-
 // OBJECT
 interface GuildValuesStore {
     suspend fun getValues(): List<String>
