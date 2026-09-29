@@ -2,9 +2,25 @@
 package core
 
 // CLASS
-// TODO: Write doc
 /**
+ * Represents various roles within a guild, each associated with an ID and a category.
  *
+ * @property id The unique Discord snowflake identifier of the role.
+ * @property category The category of the role, distinguishing its type.
+ *
+ * @constructor Creates a `GuildRole` with a specific ID and associated category.
+ *
+ * The roles are divided into two primary categories:
+ * - `SUBJECT`: Includes roles related to disciplines or fields of study.
+ * - `BACKGROUND`: Includes roles indicating educational background or level.
+ *
+ * Companion Object:
+ * Provides utility functions, such as finding a role by its ID.
+ *
+ * Enumeration values:
+ * - `SOCIAL_SCIENCES`, `BIOLOGY`, `CHEMISTRY`, `ENGINEERING`, `COMPUTER_SCIENCE`, `DATA_SCIENCE`,
+ *   `MATHEMATICS`, `PHYSICS`, `PLANETARY_SCIENCE` (Subject-related roles)
+ * - `HIGH_SCHOOL`, `UNDERGRAD`, `BACHELORS`, `GRAD_STUDENT`, `MASTERS`, `PHD` (Background-related roles)
  */
 enum class GuildRole(val id: Long, val category: RoleCategory) {
     // SUBJECT

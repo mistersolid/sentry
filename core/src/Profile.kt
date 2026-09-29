@@ -2,9 +2,11 @@
 package core
 
 // CLASS
-// TODO: Write doc
 /**
+ * Represents a profile consisting of a set of roles within a guild. This class is designed to
+ * determine various role-based attributes and categorizations.
  *
+ * @property roles The set of roles assigned to the profile.
  */
 @JvmInline
 value class Profile(val roles: Set<GuildRole>) {

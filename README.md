@@ -59,7 +59,7 @@ bot  ──►  features/*  ──►  framework  ──►  core
 - `persistence` depends on `core` only.
 - `framework` depends on `core` and `persistence`. Never on a feature.
 - `features/*` depend on the three above. **Never on each other.**
-- `bot` depends on `framework`, and on features.
+- `bot` depends on `framework`, `features`, and `persistence`.
 
 If two features need to share code, push it down into `core` or
 `framework`. Do not add a feature-to-feature dependency.

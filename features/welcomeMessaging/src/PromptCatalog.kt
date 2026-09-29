@@ -18,11 +18,16 @@ import core.Profile
 
 // CONSTANT
 const val WEIGHT_DEFAULT = 100
-
-/** Generic prompts are drawn less often than role-specific ones. */
-const val WEIGHT_GENERIC = 65
+const val WEIGHT_GENERIC = 65   // Generic prompts are drawn less often than role-specific ones.
 
 // CLASS
+/**
+ * Represents a welcome prompt entry with a selection weight and eligibility condition.
+ *
+ * @property text The prompt text or question to display.
+ * @property weight The relative weight determining how frequently the prompt is sampled during selection.
+ * @property applies A predicate that determines whether this prompt applies to a given user [Profile].
+ */
 data class PromptEntry(
     val text: String,
     val weight: Int = WEIGHT_DEFAULT,
@@ -30,6 +35,14 @@ data class PromptEntry(
 )
 
 // FUNCTION
+/**
+ * Creates a list of [PromptEntry] instances given [texts], [weight], and [applies].
+ *
+ * @param texts The prompt text or question to display.
+ * @param weight The relative weight determining how frequently the prompt is sampled during selection.
+ * @param applies applies A predicate that determines whether this prompt applies to a given user [Profile].
+ * @return A list of [PromptEntry] instances.
+ */
 private fun group(
     vararg texts: String,
     weight: Int = WEIGHT_DEFAULT,
@@ -209,7 +222,6 @@ val promptCatalog: List<PromptEntry> = buildList {
             "🧰 What skill from your degree do you use the most in everyday life?",
             "✨ What inspired you to get into STEM?",
             "📢 What subject do you wish more people understood?",
-            "🚧 What's a common misconception about your field?",
             "🔗 Which interdisciplinary field fascinates you most?",
             "🔬 What research tool or method has made the biggest difference in your work?",
             "🛠️ What are you working on right now? (Project or otherwise)",
