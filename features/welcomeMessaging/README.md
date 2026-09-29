@@ -2,6 +2,8 @@
 
 Last updated: September 29, 2026
 
+This file was made entirely by generative AI. Pending human review.
+
 The `welcomeMessaging` feature sends new guild members a short set of
 conversation starters selected from their Discord roles and profile attributes.
 It depends on `core` for `Profile`, `framework` for bot integration, and
