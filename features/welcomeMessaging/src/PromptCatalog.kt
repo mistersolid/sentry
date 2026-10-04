@@ -36,6 +36,18 @@ data class PromptEntry(
 
 // FUNCTION
 /**
+ * The message welcomes the new member to the community and informs them about permissions
+ * earned through engaging with the community.
+ *
+ * @param member the mention string of the guild member to be included in the announcement message.
+ * @return a formatted generic announcement message as a String.
+ */
+fun genericAnnouncement(member: String) = "🎉 Everyone welcome $member\n" +
+        "🔔 Image and embed permissions are earned through engaging with the community! \n" +
+        "To get started, answer as little or as much as you like!"
+
+
+/**
  * Creates a list of [PromptEntry] instances given [texts], [weight], and [applies].
  *
  * @param texts The prompt text or question to display.

@@ -55,9 +55,10 @@ class WelcomeFeature(private val store: GuildConfigStore) {
                 val guild = member.getGuild()
                 val channel = guild.systemChannel ?: return@on
 
-                val text = build(member)
+                val prompts = build(member)
 
-                channel.createMessage(text)
+                channel.createMessage(genericAnnouncement(member.mention))
+                channel.createMessage(prompts)
             }
         }
     }
