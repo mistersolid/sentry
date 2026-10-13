@@ -17,10 +17,12 @@ internal object GuildConfig : Table("guild_config") {
 
     const val WELCOME = "welcome"
     const val PHASH = "phash"
+    const val GUARD = "guard"
 }
 
 // CLASS
 internal class ConfigStore(private val database: Database): GuildConfigStore {
+    // WELCOME
     override suspend fun isWelcomeEnabled(): Boolean {
         return transaction(database) {
             isEnabled(GuildConfig.WELCOME)
@@ -33,6 +35,7 @@ internal class ConfigStore(private val database: Database): GuildConfigStore {
         }
     }
 
+    // PHASH
     override suspend fun isPhashEnabled(): Boolean {
         return transaction(database) {
             isEnabled(GuildConfig.PHASH)
@@ -45,6 +48,20 @@ internal class ConfigStore(private val database: Database): GuildConfigStore {
         }
     }
 
+    // GUARD
+    override suspend fun isGuardEnabled(guildId: Long): Boolean {
+        return transaction(database) {
+            isEnabled(guardKey(guildId))
+        }
+    }
+
+    override suspend fun toggleGuard(guildId: Long, enabled: Boolean) {
+        transaction(database) {
+            setEnabled(guardKey(guildId), enabled)
+        }
+    }
+
+    // GENERIC
     private fun isEnabled(feature: String): Boolean {
         return GuildConfig
             .select(GuildConfig.enabled)
@@ -68,6 +85,8 @@ internal class ConfigStore(private val database: Database): GuildConfigStore {
                 }
             }
     }
+
+    private fun guardKey(guildId: Long): String = "${GuildConfig.GUARD}:$guildId"
 }
 
 // OBJECT

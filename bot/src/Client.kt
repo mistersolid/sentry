@@ -7,6 +7,8 @@ import dev.kord.core.on
 import features.phashMatching.PhashCommand
 import features.phashMatching.PhashFeature
 import features.phashMatching.initOpenCv
+import features.spamGuarding.GuardCommand
+import features.spamGuarding.GuardFeature
 import features.welcomeMessaging.WelcomeCommand
 import features.welcomeMessaging.WelcomeFeature
 import framework.Command
@@ -31,7 +33,8 @@ suspend fun client() {
     // COMMAND
     val commands: List<Command> = listOf(
         WelcomeCommand(store),
-        PhashCommand(store, values)
+        PhashCommand(store, values),
+        GuardCommand(store),
     )
     val byName = commands.associateBy { it.name }
     commands.forEach { it.register(kord) }
@@ -51,6 +54,7 @@ suspend fun client() {
     // FEATURE
     WelcomeFeature(store).install(kord)
     PhashFeature(store, values).install(kord)
+    GuardFeature(store).install(kord)
 
     // INSTANCE
     kord.login {

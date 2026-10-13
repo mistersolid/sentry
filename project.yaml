@@ -1,9 +1,8 @@
 modules:
   - ./bot
   - ./core
-  - ./features/logging
   - ./features/phashMatching
-  - ./features/roleManagement
+  - ./features/spamGuarding
   - ./features/welcomeMessaging
   - ./framework
   - ./persistence

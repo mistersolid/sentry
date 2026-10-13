@@ -11,6 +11,8 @@ interface GuildConfigStore {
     suspend fun toggleWelcome(enabled: Boolean)
     suspend fun isPhashEnabled(): Boolean
     suspend fun togglePhash(enabled: Boolean)
+    suspend fun isGuardEnabled(guildId: Long): Boolean
+    suspend fun toggleGuard(guildId: Long, enabled: Boolean)
 }
 
 /**
