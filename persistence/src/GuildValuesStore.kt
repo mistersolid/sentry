@@ -19,8 +19,8 @@ object GuildValuesFactory {
      * @return An implementation of [GuildConfigStore] for managing guild-specific configurations.
      */
     fun create(path: String = "values.db"): GuildValuesStore {
-        Values.connect(path)
+        val database = Values.connect(path)
 
-        return ValuesStore()
+        return ValuesStore(database)
     }
 }

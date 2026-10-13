@@ -17,7 +17,7 @@ import persistence.GuildConfigStore
  * for users in a guild, based on their roles and applicable prompts. It listens to member
  * updates and triggers the welcome message process when a member completes their pending state.
  *
- * @property store The configuration store used to retrieve guild-specific settings.
+ * @property store The configuration store used to retrieve feature settings.
  */
 class WelcomeFeature(private val store: GuildConfigStore) {
     fun build(member: Member): String {
@@ -49,8 +49,7 @@ class WelcomeFeature(private val store: GuildConfigStore) {
         kord.on<MemberUpdateEvent> {
             val wasPending = old?.isPending ?: return@on
             if (wasPending && !member.isPending) {
-                val guildId = member.guildId.value.toLong()
-                if (!store.isWelcomeEnabled(guildId)) return@on
+                if (!store.isWelcomeEnabled()) return@on
 
                 val guild = member.getGuild()
                 val channel = guild.systemChannel ?: return@on

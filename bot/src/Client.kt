@@ -2,9 +2,11 @@
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.on
 import features.phashMatching.PhashCommand
 import features.phashMatching.PhashFeature
+import features.phashMatching.initOpenCv
 import features.welcomeMessaging.WelcomeCommand
 import features.welcomeMessaging.WelcomeFeature
 import framework.Command
@@ -17,6 +19,9 @@ private val logger = LoggerFactory.getLogger("client")
 
 // MAIN
 suspend fun client() {
+    // INIT
+    initOpenCv()
+
     // VALUE
     val config = loadConfig()
     val kord = Kord(config.token)

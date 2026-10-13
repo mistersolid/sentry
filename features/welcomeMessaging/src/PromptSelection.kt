@@ -30,5 +30,5 @@ fun choosePrompt(
     promptCatalog
         .filter { it.applies(profile) }
         .distinctBy { it.text }
-        .sampleWeighted(n, random as Random.Default) { it.weight }
+        .sampleWeighted(n, random) { it.weight }
         .map { PREFIX + it.text }

@@ -5,63 +5,79 @@ package persistence
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import persistence.GuildConfig.welcomeEnabled
 
 // OBJECT
 internal object GuildConfig : Table("guild_config") {
-    // Guild
-    val guildID = long("guild_id")
-    override val primaryKey = PrimaryKey(guildID)
+    val key = varchar("key", 32)
+    val enabled = bool("enabled")
+    override val primaryKey = PrimaryKey(key)
 
-    // Welcome Messaging Feature
-    val welcomeEnabled = bool("welcome_enabled").default(true)
-
-    // pHash Matching Feature
-    val phashEnabled = bool("phash_enabled").default(true)
+    const val WELCOME = "welcome"
+    const val PHASH = "phash"
 }
 
 // CLASS
-internal class ConfigStore: GuildConfigStore {
-    override suspend fun isWelcomeEnabled(guildId: Long): Boolean {
-        return GuildConfig
-            .select(GuildConfig.welcomeEnabled)
-            .where { GuildConfig.guildID eq guildId }
-            .singleOrNull()
-            ?.get(GuildConfig.welcomeEnabled)
-            ?: false
-    }
-
-    override suspend fun toggleWelcome(guildId: Long, enabled: Boolean) {
-        GuildConfig.update({ GuildConfig.guildID eq guildId }) {
-            it[welcomeEnabled] = enabled
+internal class ConfigStore(private val database: Database): GuildConfigStore {
+    override suspend fun isWelcomeEnabled(): Boolean {
+        return transaction(database) {
+            isEnabled(GuildConfig.WELCOME)
         }
     }
 
-    override suspend fun isPhashEnabled(guildId: Long): Boolean {
+    override suspend fun toggleWelcome(enabled: Boolean) {
+        transaction(database) {
+            setEnabled(GuildConfig.WELCOME, enabled)
+        }
+    }
+
+    override suspend fun isPhashEnabled(): Boolean {
+        return transaction(database) {
+            isEnabled(GuildConfig.PHASH)
+        }
+    }
+
+    override suspend fun togglePhash(enabled: Boolean) {
+        transaction(database) {
+            setEnabled(GuildConfig.PHASH, enabled)
+        }
+    }
+
+    private fun isEnabled(feature: String): Boolean {
         return GuildConfig
-            .select(GuildConfig.phashEnabled)
-            .where { GuildConfig.guildID eq guildId}
+            .select(GuildConfig.enabled)
+            .where { GuildConfig.key eq feature }
             .singleOrNull()
-            ?.get(GuildConfig.phashEnabled)
+            ?.get(GuildConfig.enabled)
             ?: false
     }
 
-    override suspend fun togglePhash(guildId: Long, enabled: Boolean) {
-        GuildConfig.update( { GuildConfig.guildID eq guildId }) {
-            it[phashEnabled] = enabled
-        }
+    private fun setEnabled(feature: String, enabled: Boolean) {
+            val updated = GuildConfig.update({
+                GuildConfig.key eq feature
+            }) {
+                it[GuildConfig.enabled] = enabled
+            }
+
+            if (updated == 0) {
+                GuildConfig.insert {
+                    it[GuildConfig.key] = feature
+                    it[GuildConfig.enabled] = enabled
+                }
+            }
     }
 }
 
 // OBJECT
 internal object Config {
-    fun connect(path: String = "bot.db") {
-        Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
-        transaction {
+    fun connect(path: String = "bot.db"): Database {
+        val database = Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
+
+        transaction(database) {
             SchemaUtils.create(GuildConfig)
         }
+        return database
     }
 }

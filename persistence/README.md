@@ -4,14 +4,14 @@ Last updated: September 29, 2026
 
 This file was made entirely by generative AI. Pending human review.
 
-The `persistence` module provides SQLite-backed stores behind small interfaces. It keeps guild feature settings and reference pHashes out of Discord event handlers and exposes suspendable operations for database access.
+The `persistence` module provides SQLite-backed stores behind small interfaces. It keeps bot feature settings and reference pHashes out of Discord event handlers and exposes suspendable operations for database access.
 
 ## Storage flows
 
 ```mermaid
 flowchart TD
     ConfigFactory["GuildConfigStoreFactory"] --> ConfigDB["bot.db / guild_config"]
-    ConfigDB --> Settings["welcome_enabled + phash_enabled"]
+    ConfigDB --> Settings["feature key + enabled state"]
     ValuesFactory["GuildValuesFactory"] --> ValuesDB["values.db / phash_values"]
     ValuesDB --> Hashes["16-character pHash values"]
 ```
@@ -22,7 +22,7 @@ flowchart TD
 
 | Type | Responsibility |
 | --- | --- |
-| `GuildConfigStore` | Read and toggle per-guild welcome and pHash settings |
+| `GuildConfigStore` | Read and toggle welcome and pHash settings |
 | `GuildValuesStore` | Read and add stored pHash strings |
 | `GuildConfigStoreFactory` | Connect to and initialize guild configuration storage |
 | `GuildValuesFactory` | Connect to and initialize pHash value storage |

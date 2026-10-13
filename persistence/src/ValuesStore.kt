@@ -28,7 +28,7 @@ object ValuesConfig : Table("phash_values") {
  *
  * This class is intended to be used internally and should not be exposed outside the `persistence` package.
  */
-internal class ValuesStore: GuildValuesStore {
+internal class ValuesStore(private val database: Database): GuildValuesStore {
     /**
      * Retrieves a list of hash values from the configured data source.
      *
@@ -39,7 +39,7 @@ internal class ValuesStore: GuildValuesStore {
      * @return A list of hash values as strings retrieved from the database.
      */
     override suspend fun getValues(): List<String> {
-        return newSuspendedTransaction(Dispatchers.IO) {
+        return newSuspendedTransaction(Dispatchers.IO, db = database) {
             ValuesConfig.select(ValuesConfig.hashValue)
                 .map { it[ValuesConfig.hashValue] }
         }
@@ -55,7 +55,7 @@ internal class ValuesStore: GuildValuesStore {
      * @param value The hash value to be added to the database.
      */
     override suspend fun addValue(value: String) {
-        newSuspendedTransaction(Dispatchers.IO) {
+        newSuspendedTransaction(Dispatchers.IO, db = database) {
             ValuesConfig.insert {
                 it[hashValue] = value
             }
@@ -71,10 +71,11 @@ internal class ValuesStore: GuildValuesStore {
  * to store and manage values. The default database file is named "values.db".
  */
 internal object Values {
-    fun connect(path: String = "values.db") {
-        Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
-        transaction {
+    fun connect(path: String = "values.db"): Database {
+        val database = Database.connect("jdbc:sqlite:$path", driver = "org.sqlite.JDBC")
+        transaction(database) {
             SchemaUtils.create(ValuesConfig)
         }
+        return database
     }
 }

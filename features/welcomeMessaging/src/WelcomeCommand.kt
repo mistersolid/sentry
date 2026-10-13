@@ -13,13 +13,13 @@ import persistence.GuildConfigStore
 
 // CLASS
 /**
- * A command that allows toggling automatic welcome messages for new members in a guild.
+ * A command that allows toggling the bot's automatic welcome messages.
  *
  * This command interacts with a provided [GuildConfigStore] to enable or disable
- * welcome messages for a specific guild. When executed, it will respond to the user
- * with the current status of the welcome message configuration.
+ * welcome messages. When executed, it will respond to the user with the current status
+ * of the welcome message configuration.
  *
- * @property store The configuration store used to persist the welcome message state for guilds.
+ * @property store The configuration store used to persist the welcome message state.
  */
 class WelcomeCommand(private val store: GuildConfigStore): Command {
     override val name = "welcome-messaging"
@@ -36,10 +36,10 @@ class WelcomeCommand(private val store: GuildConfigStore): Command {
     }
 
     override suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
-        val guildId = event.interaction.data.guildId.value ?: return
+        if (event.interaction.data.guildId.value == null) return
         val toggle = event.interaction.command.booleans["toggle"] ?: return
 
-        store.toggleWelcome(guildId.value.toLong(), toggle)
+        store.toggleWelcome(toggle)
 
         event.interaction.respondEphemeral {
             content = if (toggle) "Welcome messages on." else "Welcome messages off."

@@ -9,12 +9,23 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfByte
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
+import java.io.ByteArrayOutputStream
+import java.net.HttpURLConnection
+import java.net.URI
 import kotlin.math.sqrt
 
 // CONSTANT
 private const val HASH_SIZE = 8
 private const val HIGHFREQ_FACTOR = 4
 const val HASH_THRESHOLD = 8
+private const val REMOTE_IMAGE_CONNECT_TIMEOUT_MS = 5_000
+private const val REMOTE_IMAGE_READ_TIMEOUT_MS = 10_000
+private const val MAX_REMOTE_IMAGE_BYTES = 10 * 1024 * 1024
+
+// INIT
+fun initOpenCv() {
+    nu.pattern.OpenCV.loadLocally()
+}
 
 // FUNCTION
 /**
@@ -30,7 +41,28 @@ const val HASH_THRESHOLD = 8
  */
 fun perceptualHash(imgSource: String): String {
     val img = if (imgSource.startsWith("http://") || imgSource.startsWith("https://")) {
-        val bytes = java.net.URL(imgSource).readBytes()
+        val connection = URI.create(imgSource).toURL().openConnection() as HttpURLConnection
+        connection.connectTimeout = REMOTE_IMAGE_CONNECT_TIMEOUT_MS
+        connection.readTimeout = REMOTE_IMAGE_READ_TIMEOUT_MS
+        connection.instanceFollowRedirects = false
+        connection.connect()
+        require(connection.responseCode in 200..299) { "Image download failed: ${connection.responseCode}" }
+        require(connection.contentLengthLong in -1..MAX_REMOTE_IMAGE_BYTES.toLong()) {
+            "Image exceeds maximum size"
+        }
+
+        val output = ByteArrayOutputStream()
+        connection.inputStream.use { input ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            while (true) {
+                val count = input.read(buffer)
+                if (count < 0) break
+                output.write(buffer, 0, count)
+                require(output.size() <= MAX_REMOTE_IMAGE_BYTES) { "Image exceeds maximum size" }
+            }
+        }
+        connection.disconnect()
+        val bytes = output.toByteArray()
         Imgcodecs.imdecode(MatOfByte(*bytes), Imgcodecs.IMREAD_COLOR)
     } else {
         Imgcodecs.imread(imgSource, Imgcodecs.IMREAD_COLOR)

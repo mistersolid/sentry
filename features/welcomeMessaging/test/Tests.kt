@@ -59,6 +59,13 @@ class PromptSelectionTest {
     }
 
     @Test
+    fun `selection accepts seeded random generators`() {
+        val prompts = choosePrompt(Profile(emptySet()), random = Random(42))
+
+        assertEquals(PROMPT_COUNT_DEFAULT, prompts.size)
+    }
+
+    @Test
     fun `selection only includes prompts applicable to the profile`() {
         val profile = Profile(setOf(COMPUTER_SCIENCE))
         val prompts = choosePrompt(profile, n = promptCatalog.size, random = random)

@@ -9,8 +9,10 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.attachment
 import dev.kord.rest.builder.interaction.boolean
+import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.interaction.subCommand
 import framework.Command
 import kotlinx.coroutines.Dispatchers
@@ -20,13 +22,13 @@ import persistence.GuildValuesStore
 
 // CLASS
 /**
- * Represents a command for managing perceptual hash (pHash) matching functionality in Discord guilds.
+ * Represents a command for managing the bot's perceptual hash (pHash) matching functionality.
  *
  * This command allows toggling the pHash matching capability for automatic image monitoring and moderation,
  * as well as adding new images to the pHash database for similarity checks during moderation.
  *
  * @constructor Creates a new instance of the `PhashCommand` with the specified configuration and data stores.
- * @param store A `GuildConfigStore` instance for managing guild-specific configuration settings.
+ * @param store A `GuildConfigStore` instance for managing configuration settings.
  * @param values A `GuildValuesStore` instance for storing and retrieving pHashes for comparison.
  */
 class PhashCommand(private val store: GuildConfigStore, private val values: GuildValuesStore): Command {
@@ -41,8 +43,12 @@ class PhashCommand(private val store: GuildConfigStore, private val values: Guil
                 boolean("enabled", "Enable or disable") { required = true }
             }
             subCommand("add", "Add an image to the pHash database") {
-                attachment("image", "Image to add") { required = true }
+                attachment("image", "Image to add") { required = false }
+                string("url", "URL to add") { required = false }
             }
+        }
+        kord.createGlobalMessageCommand("add and mute") {
+            defaultMemberPermissions = Permissions(Permission.ManageGuild)
         }
     }
 
@@ -56,10 +62,10 @@ class PhashCommand(private val store: GuildConfigStore, private val values: Guil
     }
 
     private suspend fun handleToggle(event: ChatInputCommandInteractionCreateEvent, cmd: SubCommand) {
-        val guildId = event.interaction.data.guildId.value ?: return
+        if (event.interaction.data.guildId.value == null) return
         val enabled = cmd.booleans["enabled"] ?: return
 
-        store.togglePhash(guildId.value.toLong(), enabled)
+        store.togglePhash(enabled)
         event.interaction.respondEphemeral {
             content = if (enabled) "pHash matching on." else "pHash matching off."
         }
@@ -76,18 +82,21 @@ class PhashCommand(private val store: GuildConfigStore, private val values: Guil
      * @param cmd The subcommand containing the attachment and other input data.
      */
     private suspend fun handleAdd(event: ChatInputCommandInteractionCreateEvent, cmd: SubCommand) {
-        val attachment = cmd.attachments["image"] ?: return
+        val image = cmd.attachments["image"]
+        val imageUrl = image?.url ?: cmd.strings["url"] ?: return
 
         // Hashing downloads the image, so defer to avoid the 3s interaction timeout
         val response = event.interaction.deferEphemeralResponse()
 
-        if (attachment.contentType?.startsWith("image/") != true) {
-            response.respond { content = "Selected file isn't an image." }
+        if (
+            image != null && image.contentType?.startsWith("image/") != true
+            ) {
+            response.respond { content = "Selected file isn't an image or link." }
             return
         }
 
         val newHash = try {
-            withContext(Dispatchers.IO) { perceptualHash(attachment.url) }
+            withContext(Dispatchers.IO) { perceptualHash(imageUrl) }
         } catch (_: Exception) {
             response.respond { content = "Couldn't process selected image." }
             return

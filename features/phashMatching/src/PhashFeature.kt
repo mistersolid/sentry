@@ -4,11 +4,19 @@ package features.phashMatching
 // IMPORT
 import dev.kord.core.Kord
 import dev.kord.core.behavior.ban
+import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.entity.Message
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonNull.content
 import persistence.GuildConfigStore
 import persistence.GuildValuesStore
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
 // CLASS
@@ -30,7 +38,7 @@ class PhashFeature(private val store: GuildConfigStore, private val values: Guil
 
         for (url in urls) {
             val hash = try {
-                perceptualHash(url)
+                withContext(Dispatchers.IO) { perceptualHash(url) }
             } catch (e: Exception) {
                 print(e)
                 continue
@@ -54,20 +62,77 @@ class PhashFeature(private val store: GuildConfigStore, private val values: Guil
      */
     fun install(kord: Kord) {
         kord.on<MessageCreateEvent> {
-            val evaluate = build(this.message)
-            val guild = this.guildId?.value?.toLong() ?: return@on
+            if (this.guildId == null) return@on
 
-            if (!store.isPhashEnabled(guild)) return@on
+            if (!store.isPhashEnabled()) return@on
+            val evaluate = build(this.message)
             if (evaluate) {
                 val member = this.message.getAuthorAsMember()
+                val dmChannel = member.getDmChannel()
                 val guild = member.getGuild()
 
                 this.message.delete()
-                member.ban {
-                    reason = "You've been banned from ${guild.name} by Sentry. Reason: uploading an image identified " +
-                            "to be in violation of our community guidelines. If you disagree with this decision, " +
-                            "you may contact a staff member to appeal."
-                    deleteMessageDuration = 5.minutes
+
+                member.edit {
+                    communicationDisabledUntil = Clock.System.now().plus(7.days)
+                }
+
+                dmChannel.createMessage("You've been muted for one week in ${guild.name}. Reason: uploading an image identified " +
+                        "to be in violation of our community guidelines. If you disagree with this decision, " +
+                        "you may contact a staff member to appeal. Further measures may be taken.")
+            }
+        }
+
+        kord.on<MessageCommandInteractionCreateEvent> {
+            val message = this.interaction.target.fetchMessage()
+            val attachment = message.attachments
+            val evaluate = build(message)
+
+            // Hashing downloads the image, so defer to avoid the 3s interaction timeout
+            val response = interaction.deferEphemeralResponse()
+
+            for (i in attachment) {
+                if (!i.isImage) {
+                    response.respond { content = "No image was attached to the message." }
+                }
+
+                val newHash = try {
+                    withContext(Dispatchers.IO) {
+                        perceptualHash(i.url)
+                    }
+                } catch (_: Exception) {
+                    response.respond { content = "Couldn't process selected image." }
+                    return@on
+                }
+
+                val exists = values.getValues().any { hammingDistance(it, newHash as String) <= HASH_THRESHOLD }
+                if (exists) {
+                    response.respond { content = "This image already exists in the pHash matching database." }
+                } else {
+                    values.addValue(newHash as String)
+                    response.respond { content = "The image has been added to the pHash matching database." }
+                }
+
+                if (evaluate) {
+                    val member = message.getAuthorAsMember()
+                    val dmChannel = member.getDmChannel()
+                    val guild = member.getGuild()
+
+                    message.delete()
+
+                    member.edit {
+                        communicationDisabledUntil = Clock.System.now().plus(7.days)
+                    }
+
+                    dmChannel.createMessage(
+                        "You've been muted for one week in ${guild.name}. Reason: uploading an image identified " +
+                                "to be in violation of our community guidelines. If you disagree with this decision, " +
+                                "you may contact a staff member to appeal. Further measures may be taken."
+                    )
+
+                    response.respond { content = "User ${member.mention} has been muted for one week." }
+
+                    return@on
                 }
             }
         }
