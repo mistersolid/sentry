@@ -16,7 +16,6 @@ import java.io.File
 data class FileConfig(
     val guildID: Snowflake,
     val ownerID: Snowflake,
-    val prefix: String = "!",
 )
 
 /**
@@ -51,7 +50,6 @@ val intentConfig = Intents {
  * @property token The bot token used for authentication with the Discord API.
  * @property guildID The Snowflake ID of the guild associated with the bot, extracted from the configuration file.
  * @property ownerID The Snowflake ID of the bot owner, extracted from the configuration file.
- * @property prefix The command prefix for the bot, extracted from the configuration file.
  * @property intents The set of intents specifying the Discord events the bot will monitor.
  */
 class Config(
@@ -61,12 +59,11 @@ class Config(
 ) {
     val guildID = file.guildID
     val ownerID = file.ownerID
-    val prefix = file.prefix
 
     /**
      * Returns a string representation of the object. Token deliberately omitted from logs; do not include it.
      */
-    override fun toString() = "Config(guildID=$guildID, ownerID=$ownerID, prefix=$prefix)"
+    override fun toString() = "Config(guildID=$guildID, ownerID=$ownerID)"
 }
 
 // FUNCTION
